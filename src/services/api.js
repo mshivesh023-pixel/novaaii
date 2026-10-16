@@ -4,7 +4,7 @@
 //   GET  /auth/me                             -> { user }
 //   POST /content/generate {type,tone,topic}  -> { id, content, createdAt }
 //   GET  /content/history                     -> { items: [...] }
-const BASE = 'http://localhost:4000';
+const BASE = import.meta.env.VITE_API_URL;
 const TOKEN_KEY = 'novaai_token';
 
 export const tokenStore = {
