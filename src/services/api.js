@@ -1,9 +1,4 @@
-// Single place for all backend calls. Expected endpoints (build these in Node.js):
-//   POST /auth/register {name,email,password} -> { token, user }
-//   POST /auth/login    {email,password}      -> { token, user }
-//   GET  /auth/me                             -> { user }
-//   POST /content/generate {type,tone,topic}  -> { id, content, createdAt }
-//   GET  /content/history                     -> { items: [...] }
+
 const BASE = import.meta.env.VITE_API_URL;
 const TOKEN_KEY = 'novaai_token';
 
@@ -13,15 +8,19 @@ export const tokenStore = {
   clear: () => localStorage.removeItem(TOKEN_KEY),
 };
 
-
 async function request(path, { method = 'GET', body } = {}) {
   let res;
 
   try {
+    const token = tokenStore.get();
+
     res = await fetch(`${BASE}/api${path}`, {
       method,
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch {
